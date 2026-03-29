@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài tập 23thg3</title>
+</head>
+<body>
+
+<h2>Thông tin sinh viên</h2>
+<p id="output"></p>
+
+<script>
+    let fullName = "Pham Do Ha Thanh";
+    let studentId = "22070827a4042984";
+    let birthYear = 2006;
+    let height = 1.59;
+    let isStudent = true;
+
+    let currentYear = new Date().getFullYear();
+    let age = currentYear - birthYear;
+
+    let result = `
+        Xin chào, tôi là <b>${fullName}</b>, MSSV: <b>${studentId}</b>.<br>
+        Tôi cao <b>${height}</b>m và năm nay <b>${age}</b> tuổi.
+    `;
+
+    document.getElementById("output").innerHTML = result;
+</script>
+
+</body>
+</html>
