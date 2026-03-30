@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài tập 23thg3</title>
+</head>
+<body>
+
+<h2>Thông tin sinh viên</h2>
+<p id="output"></p>
+
+<script>
+    let fullName = "Pham Do Ha Thanh";
+    let studentId = "27A4042984";
+
+    let nameParts = fullName.split(" ");
+    let ten = nameParts[nameParts.length - 1]; 
+    let ho = nameParts[0].charAt(0);    
+    let dem = nameParts[1].charAt(0);  
+
+    let email = (ten + ho + dem).toLowerCase() + "." 
+    + studentId.toLowerCase() + "@hvnh.edu.vn";
+
+    let khoa = studentId.substring(0, 2); 
+    let faculty = studentId.substring(3, 6);
+    let ten_faculty = "";     
+    if(faculty == 404){ ten_faculty = "CNTT"; }
+    else ten_faculty = "k biet ten nganh";
+
+    let last4 = studentId.substring(studentId.length - 4); 
+    let sum = 0;
+
+    for (let i = 0; i < last4.length; i++) {
+        sum += parseInt(last4[i]);
+    }
+
+    // ===== 5. OUTPUT =====
+    let result = `
+        Email: <b>${email}</b><br><br>
+        Xin chào <b>${fullName}</b>, bạn là sinh viên khóa <b>${khoa}</b>, 
+        khoa <b>${ten_faculty}</b>, tổng 4 số cuối trong mã sinh viên là <b>${sum}</b>.
+    `;
+
+    document.getElementById("output").innerHTML = result;
+</script>
+
+</body>
+</html>
