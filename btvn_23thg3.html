@@ -27,11 +27,11 @@
     if(faculty == 404){ ten_faculty = "CNTT"; }
     else ten_faculty = "k biet ten nganh";
 
-    let last4 = studentId.substring(studentId.length - 4); 
+    let bonSo = studentId.substring(studentId.length - 4); 
     let sum = 0;
 
-    for (let i = 0; i < last4.length; i++) {
-        sum += parseInt(last4[i]);
+    for (let i = 0; i < bonSo.length; i++) {
+        sum += parseInt(bonSo[i]);
     }
 
     let result = `
