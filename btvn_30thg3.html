@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách sinh viên</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h2>DANH SÁCH SVIEN</h2>
+
+<table id="table">
+    <thead>
+        <tr>
+            <th>Họ tên</th>
+            <th>MSSV</th>
+            <th>Email</th>
+            <th>Khóa</th>
+            <th>Khoa</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+
+function removeVietnameseTones(str) {
+    return str.normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d")
+        .replace(/Đ/g, "D");
+}
+
+
+class SinhVien {
+    constructor(fullName, studentId) {
+        this.fullName = fullName.trim();
+        this.studentId = studentId.trim();
+    }
+
+    getEmail() {
+        let name = removeVietnameseTones(this.fullName).toLowerCase();
+        let parts = name.split(/\s+/);
+
+        let ten = parts[parts.length - 1];
+        let initials = parts.slice(0, -1).map(w => w[0]).join("");
+
+        return `${ten}${initials}.${this.studentId.toLowerCase()}@sv.hvnh.edu.vn`;
+    }
+
+    getKhoaHoc() {
+        let id = this.studentId.toUpperCase();
+
+        if (["C","F","J"].includes(id[0])) {
+            return id.substring(1, 3);
+        }
+
+        return id.substring(0, 2);
+    }
+
+    getFacultyName() {
+        let id = this.studentId.toUpperCase();
+
+        if (id.startsWith("C")) return "Chất lượng cao (C)";
+        if (id.startsWith("F")) return "Liên kết quốc tế (F)";
+        if (id.startsWith("J")) return "Chương trình Nhật (J)";
+
+        let code = id.substring(3, 6);
+        let map = {
+            "404": "Công nghệ thông tin",
+            "401": "Tài chính - Ngân hàng",
+            "402": "Kế toán - Kiểm toán",
+            "403": "Quản trị kinh doanh",
+            "405": "Kinh doanh quốc tế",
+            "406": "Luật",
+            "407": "Kinh tế",
+            "408": "Khoa học dữ liệu",
+            "751": "Ngôn ngữ Anh"
+        };
+
+        return map[code] || "K biết tên ngành";
+    }
+}
+
+function renderTable(data) {
+    let tbody = document.querySelector("#table tbody");
+    tbody.innerHTML = "";
+
+    data.forEach(row => {
+        let fullName = row["Họ tên"];
+        let studentId = row["Mã SV"]; 
+
+        if (!fullName || !studentId) return;
+
+        let sv = new SinhVien(fullName, studentId);
+
+        let tr = `
+            <tr>
+                <td>${sv.fullName}</td>
+                <td>${sv.studentId}</td>
+                <td>${sv.getEmail()}</td>
+                <td>${sv.getKhoaHoc()}</td>
+                <td>${sv.getFacultyName()}</td>
+            </tr>
+        `;
+
+        tbody.innerHTML += tr;
+    });
+}
+
+fetch("DanhSachSinhVien.xlsx")
+
+.then(res => res.arrayBuffer())
+.then(data => {
+    let workbook = XLSX.read(data, { type: "array" });
+
+    let sheet = workbook.Sheets[workbook.SheetNames[0]];
+    let json = XLSX.utils.sheet_to_json(sheet);
+
+    renderTable(json);
+})
+.catch(err => {
+    console.error("Lỗi load file:", err);
+    alert("K đọc được file excel!");
+});
+</script>
+
+</body>
+</html>
